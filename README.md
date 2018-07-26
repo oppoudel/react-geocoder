@@ -1,1 +1,1 @@
-# Standalone Geocoder Widget for React Applications
+# Geocoder Component for React Applications
