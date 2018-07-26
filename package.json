@@ -8,6 +8,7 @@
     "debounce-fn": "^1.0.0",
     "downshift": "^2.0.19",
     "emotion": "^9.2.6",
+    "lodash.debounce": "^4.0.8",
     "match-sorter": "^2.2.3",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",

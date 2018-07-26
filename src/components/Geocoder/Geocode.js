@@ -1,5 +1,5 @@
 import React from "react";
-import debounce from "debounce-fn";
+import debounce from "lodash.debounce";
 import isEqual from "react-fast-compare";
 import { geocode } from "@esri/arcgis-rest-geocoder";
 
@@ -39,7 +39,6 @@ class Geocode extends React.Component {
 
   fetchData = () => {
     this.setState({ error: false, loading: true });
-
     this.makeNetworkRequest();
   };
 
