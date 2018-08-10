@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import Downshift from "downshift";
+import { geocode } from "@esri/arcgis-rest-geocoder";
+
 import matchSorter from "match-sorter";
 import {
   Label,
@@ -16,14 +18,17 @@ import Geocode from "./Geocode";
 export default class Search extends Component {
   handleStateChange = ({ selectedItem }) => {
     if (selectedItem) {
-      const { x, y } = selectedItem.location;
-      alert(`Longitude: ${x}, Latitude:${y}`);
+      const { magicKey } = selectedItem;
+      geocode({ params: { magicKey, maxLocations: 10 } }).then(res => {
+        console.log(res.candidates);
+        alert(res.candidates[0].address);
+      });
     }
   };
   getItems(allItems, filter) {
     return filter
       ? matchSorter(allItems, filter, {
-          keys: ["address"]
+          keys: ["text"]
         })
       : allItems;
   }
@@ -31,7 +36,7 @@ export default class Search extends Component {
   render() {
     return (
       <Downshift
-        itemToString={item => (item ? item.address : "")}
+        itemToString={item => (item ? item.text : "")}
         onStateChange={this.handleStateChange}
       >
         {({
@@ -82,8 +87,9 @@ export default class Search extends Component {
                   }
 
                   return (
-                    <Geocode address={`${inputValue}, Baltimore, Md`}>
+                    <Geocode address={`${inputValue}`}>
                       {({ loading, error, data = [] }) => {
+                        console.log(data);
                         if (loading) {
                           return <Item disabled>Loading...</Item>;
                         }
@@ -107,7 +113,7 @@ export default class Search extends Component {
                                 isSelected: selectedItem === item
                               })}
                             >
-                              {item.address}
+                              {item.text}
                             </Item>
                           )
                         );
