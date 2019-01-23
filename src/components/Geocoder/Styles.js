@@ -1,6 +1,6 @@
 import React from "react";
 import { css as emoCSS } from "emotion";
-import styled from "react-emotion";
+import styled from "@emotion/styled";
 
 const css = (...args) => ({ className: emoCSS(...args) });
 
@@ -109,7 +109,7 @@ const BaseMenu = styled("ul")(
 );
 
 const Menu = React.forwardRef((props, ref) => (
-  <BaseMenu innerRef={ref} {...props} />
+  <BaseMenu ref={ref} {...props} />
 ));
 
 const ControllerButton = styled("button")({

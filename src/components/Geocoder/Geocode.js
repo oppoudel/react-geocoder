@@ -1,60 +1,48 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import debounce from "lodash.debounce";
-import isEqual from "react-fast-compare";
 import { suggest } from "@esri/arcgis-rest-geocoder";
 
-class Geocode extends React.Component {
-  state = {
-    data: undefined,
-    loading: false,
-    error: false
-  };
+function Geocode({ address, children }) {
+  const [data, setData] = useState(undefined);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
-  componentDidMount() {
-    this.fetchData();
-  }
+  useEffect(
+    () => {
+      fetchData();
+    },
+    [address]
+  );
 
-  componentDidUpdate({ children: _, ...prevProps }) {
-    const { children, ...props } = this.props;
-    if (!isEqual(prevProps, props)) {
-      this.fetchData();
-    }
-  }
-
-  makeNetworkRequest = debounce(() => {
-    const { address } = this.props;
+  const makeNetworkRequest = debounce(() => {
     suggest(address, {
       params: { location: [-76.6162, 39.3043], maxSuggestions: 10 }
     })
       .then(res => {
-        this.setState({
-          data: res.suggestions,
-          loading: false,
-          error: false
-        });
+        setData(res.suggestions);
+        setLoading(false);
+        setError(false);
       })
       .catch(e => {
-        this.setState({ data: undefined, error: e.message, loading: false });
+        setData(undefined);
+        setError(e.message);
+        setLoading(false);
         console.error(e);
       });
   });
 
-  fetchData = () => {
-    this.setState({ error: false, loading: true });
-    this.makeNetworkRequest();
+  const fetchData = () => {
+    setError(false);
+    setLoading(true);
+    makeNetworkRequest();
   };
 
-  render() {
-    const { children } = this.props;
-    const { data, loading, error } = this.state;
-
-    return children({
-      data,
-      loading,
-      error,
-      refetch: this.fetchData
-    });
-  }
+  return children({
+    data,
+    loading,
+    error,
+    refetch: fetchData
+  });
 }
 
 export default Geocode;
