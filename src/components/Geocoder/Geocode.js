@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
-import debounce from "lodash.debounce";
 import { suggest } from "@esri/arcgis-rest-geocoder";
+import debounce from "lodash.debounce";
+import { useEffect, useState } from "react";
 
 function Geocode({ address, children }) {
-  const [data, setData] = useState(undefined);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [state, setState] = useState({
+    data: undefined,
+    loading: false,
+    error: false
+  });
 
   useEffect(
     () => {
@@ -19,24 +21,25 @@ function Geocode({ address, children }) {
       params: { location: [-76.6162, 39.3043], maxSuggestions: 10 }
     })
       .then(res => {
-        setData(res.suggestions);
-        setLoading(false);
-        setError(false);
+        setState({
+          ...state,
+          data: res.suggestions,
+          loading: false,
+          error: false
+        });
       })
       .catch(e => {
-        setData(undefined);
-        setError(e.message);
-        setLoading(false);
+        setState({ ...state, data: undefined, error: e.message });
         console.error(e);
       });
   });
 
   const fetchData = () => {
-    setError(false);
-    setLoading(true);
+    setState({ ...state, loading: true, error: false });
     makeNetworkRequest();
   };
 
+  const { data, loading, error } = state;
   return children({
     data,
     loading,
