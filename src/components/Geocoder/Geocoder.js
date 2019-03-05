@@ -19,7 +19,7 @@ export default function Search() {
   const handleStateChange = ({ selectedItem }) => {
     if (selectedItem) {
       const { magicKey } = selectedItem;
-      geocode({ params: { magicKey, maxLocations: 10 } }).then(res => {
+      geocode({ magicKey, maxLocations: 1}).then(res => {
         console.log(res.candidates);
         alert(res.candidates[0].address);
       });

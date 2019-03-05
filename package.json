@@ -5,8 +5,8 @@
   "dependencies": {
     "@emotion/core": "^10.0.6",
     "@emotion/styled": "^10.0.6",
-    "@esri/arcgis-rest-geocoder": "^1.15.2",
-    "@esri/arcgis-rest-request": "^1.15.2",
+    "@esri/arcgis-rest-geocoder": "^1.17.1",
+    "@esri/arcgis-rest-request": "^1.17.1",
     "debounce-fn": "^1.0.0",
     "downshift": "^3.1.12",
     "emotion": "^10.0.6",
