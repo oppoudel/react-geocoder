@@ -1,8 +1,8 @@
-import React from "react";
-import Downshift from "downshift";
-import { geocode } from "@esri/arcgis-rest-geocoder";
+import React from 'react';
+import Downshift from 'downshift';
+import { geocode } from '@esri/arcgis-rest-geocoder';
 
-import matchSorter from "match-sorter";
+import matchSorter from 'match-sorter';
 import {
   Label,
   Menu,
@@ -11,15 +11,15 @@ import {
   Item,
   ArrowIcon,
   XIcon,
-  css
-} from "./Styles";
-import Geocode from "./Geocode";
+  css,
+} from './Styles';
+import Geocode from './Geocode';
 
 export default function Search() {
   const handleStateChange = ({ selectedItem }) => {
     if (selectedItem) {
       const { magicKey } = selectedItem;
-      geocode({ magicKey, maxLocations: 1}).then(res => {
+      geocode({ magicKey, maxLocations: 1 }).then((res) => {
         console.log(res.candidates);
         alert(res.candidates[0].address);
       });
@@ -28,14 +28,14 @@ export default function Search() {
   const getItems = (allItems, filter) => {
     return filter
       ? matchSorter(allItems, filter, {
-          keys: ["text"]
+          keys: ['text'],
         })
       : allItems;
   };
 
   return (
     <Downshift
-      itemToString={item => (item ? item.text : "")}
+      itemToString={(item) => (item ? item.text : '')}
       onStateChange={handleStateChange}
     >
       {({
@@ -48,14 +48,14 @@ export default function Search() {
         getLabelProps,
         clearSelection,
         getToggleButtonProps,
-        getMenuProps
+        getMenuProps,
       }) => (
-        <div {...css({ width: 450, margin: "auto" })}>
+        <div {...css({ width: 450, margin: 'auto' })}>
           <Label {...getLabelProps()}>Search Address</Label>
-          <div {...css({ position: "relative" })}>
+          <div {...css({ position: 'relative' })}>
             <Input
               {...getInputProps({
-                placeholder: "Search Address"
+                placeholder: 'Search Address',
               })}
             />
             {selectedItem ? (
@@ -71,7 +71,7 @@ export default function Search() {
               </ControllerButton>
             )}
           </div>
-          <div {...css({ position: "relative", zIndex: 1000 })}>
+          <div {...css({ position: 'relative', zIndex: 1000 })}>
             <Menu {...getMenuProps({ isOpen })}>
               {(() => {
                 if (!isOpen) {
@@ -90,7 +90,7 @@ export default function Search() {
                       }
 
                       if (error) {
-                        return <Item disabled>Error! ${error}</Item>;
+                        return <Item disabled>Error! {error}</Item>;
                       }
 
                       if (!data.length) {
@@ -104,7 +104,7 @@ export default function Search() {
                             item,
                             index,
                             isActive: highlightedIndex === index,
-                            isSelected: selectedItem === item
+                            isSelected: selectedItem === item,
                           })}
                         >
                           {item.text}
