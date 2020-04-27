@@ -1,31 +1,52 @@
 import { suggest } from '@esri/arcgis-rest-geocoder';
 import debounce from 'lodash.debounce';
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer } from 'react';
+
+const initialState = {
+  data: undefined,
+  loading: true,
+  error: false,
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'FETCH_SUCCESS':
+      return {
+        data: action.payload,
+        loading: false,
+        error: false,
+      };
+    case 'FETCH_ERROR':
+      return {
+        data: undefined,
+        loading: false,
+        error: action.payload,
+      };
+
+    default:
+      return state;
+  }
+};
 
 function Geocode({ address, children }) {
-  const [data, setData] = useState(undefined);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-
+  const [state, dispatch] = useReducer(reducer, initialState);
   useEffect(() => {
     const fetchData = debounce(async () => {
-      setLoading(true);
-      setError(false);
       try {
         const res = await suggest(address, {
           params: { location: [-76.6162, 39.3043], maxSuggestions: 5 },
         });
-        setData(res.suggestions);
-        setLoading(false);
+        dispatch({ type: 'FETCH_SUCCESS', payload: res.suggestions });
       } catch (e) {
-        setData(undefined);
-        setLoading(false);
-        setError(e.message);
+        dispatch({ type: 'FETCH_ERROR', payload: e.message });
+
         console.error(e);
       }
     });
     fetchData();
   }, [address]);
+
+  const { data, loading, error } = state;
 
   return children({
     data,
